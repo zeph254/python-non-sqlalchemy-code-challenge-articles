@@ -1,9 +1,9 @@
 class Article:
     def __init__(self, author, magazine, title):
         if not isinstance(author, Author):
-            raise ValueError("please provide author name.")
+            raise ValueError("Please provide an author.")
         if not isinstance(magazine, Magazine):
-            raise ValueError("please provide magazine.")
+            raise ValueError("Please provide a magazine.")
         if not isinstance(title, str) or not (5 <= len(title) <= 50):
             raise ValueError("Title must have between 5 and 50 characters.")
         self.author = author
@@ -11,11 +11,15 @@ class Article:
         self.title = title
         author._articles.append(self)
         magazine._articles.append(self)
-        
+
+    def __repr__(self):
+        return f"Article: '{self.title}' by {self.author.name} in {self.magazine.name}"
+
+
 class Author:
     def __init__(self, name):
         if not isinstance(name, str) or len(name) == 0:
-            raise ValueError("name must be provided.")
+            raise ValueError("Name must be provided.")
         self._name = name
         self._articles = []
 
@@ -39,6 +43,12 @@ class Author:
             return None
         return list(set(magazine.category for magazine in self.magazines()))
 
+    def __str__(self):
+        return f"Author: {self._name}"
+
+    def __repr__(self):
+        return f"Author: {self._name}"
+
 
 class Magazine:
     _all = []
@@ -47,7 +57,7 @@ class Magazine:
         if not isinstance(name, str) or not (2 <= len(name) <= 16):
             raise ValueError("Name must be between 2 and 16 characters.")
         if not isinstance(category, str) or len(category) == 0:
-            raise ValueError("provide a valid input.")
+            raise ValueError("Please provide a valid input.")
         self.name = name
         self.category = category
         self._articles = []
@@ -77,22 +87,32 @@ class Magazine:
         if not cls._all:
             return None
         return max(cls._all, key=lambda mag: len(mag._articles))
-    
 
+    def __str__(self):
+        return f"Magazine: {self.name} (Category: {self.category})"
+
+    def __repr__(self):
+        return f"Magazine: {self.name} (Category: {self.category})"
+
+
+# Test Cases
 author1 = Author("John Doe")
 author2 = Author("Jane Smith")
 
 mag1 = Magazine("Tech Monthly", "Technology")
 mag2 = Magazine("Health Weekly", "Health")
 
-# Adding articles
-article1 = author1.add_article(mag1, "life and Future")
+# Adding Articles
+article1 = author1.add_article(mag1, "Life and Future")
 article2 = author1.add_article(mag2, "Healthy Living Tips")
 article3 = author2.add_article(mag1, "Tech Trends 2024")
 article4 = author1.add_article(mag1, "Blockchain Explained")
 
 
-print(author1.magazines())  
+print(author1) 
+print(mag1)    
+
 print(mag1.contributors())  
-print(mag1.article_titles())  
-print(Magazine.top_publisher())  
+print(author1.magazines()) 
+
+print(mag1.articles()) 
